@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Student.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,9 +56,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  String name = 'Aldrick';
-  int age = 20;
-  bool option = true;
+  int age = 21;
+  String name = "Martin";
+  bool programing = true;
+  final List<String> students = ['Alumno1', 'Alumno2', 'Alumno3'];
+  final Student student = Student("Martin", "20223tn139");
+  TextEditingController _txtName = TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -72,17 +76,41 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _decrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       if (_counter > 0) {
-      _counter--;
+        _counter--;
       }
     });
   }
 
+  Widget _getAllStudents() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        Text(
+          "Students:",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 12),
+        ...students.map((n) => Text("- $n")).toList(),
+      ],
+    );
+  }
+
+void _addStudent(){
+  final name = _txtName.text.trim();
+  if(name.isEmpty){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Please write something"))
+    );
+    return;
+
+  }
+  setState(() {
+    students.add(name);
+  });
+  _txtName.clear();
+}
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -125,29 +153,54 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: TextField(
+                controller: _txtName,
+                decoration: InputDecoration(
+                  labelText: "Name",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: ElevatedButton(
+                onPressed: _addStudent,
+                child: Text("Add Student"),
+              )
+             
+            ),
+
             SizedBox(height: 15),
-            Text('Nombre:  $name'),
-            Text('Edad:  $age'),
-            Text('Soy bueno pa la chamba?  $option'),
+            Text('Nombre : $name'),
+            Text('Edad: $age'),
+            Text('Programo?: $programing'),
+            SizedBox(height: 15),
+            Text("Student1: ${student.name} "),
+
+            _getAllStudents(),
           ],
         ),
       ),
+
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(height: 15),
           FloatingActionButton(
             onPressed: _incrementCounter,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
+          const SizedBox(width: 16),
           FloatingActionButton(
             onPressed: _decrementCounter,
-            tooltip: 'Decrement',
+            tooltip: 'Decremente',
             child: const Icon(Icons.remove),
           ),
         ],
       ),
+
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
